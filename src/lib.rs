@@ -1,4 +1,6 @@
+use wasm_bindgen::prelude::*;
 
+#[wasm_bindgen]
 pub fn pearson_correlation_coefficient(x: &[f64], y: &[f64]) -> f64 {
     let n = x.len();
     assert_eq!(n, y.len());
@@ -34,6 +36,7 @@ pub fn pearson_correlation_coefficient(x: &[f64], y: &[f64]) -> f64 {
 /// # Panics
 ///
 /// This function will panic if `a` and `b` have different dimensions.
+#[wasm_bindgen]
 pub fn cosine_similarity(a: &[f64], b: &[f64]) -> f64 {
     assert_eq!(a.len(), b.len(), "Vectors must have same dimensions.");
 
