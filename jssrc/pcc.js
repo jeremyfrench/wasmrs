@@ -1,4 +1,4 @@
-function pearsonCorrelationCoefficient(x, y) {
+export function pearsonCorrelationCoefficient(x, y) {
   const n = x.length;
   let sum_x = 0;
   let sum_y = 0;

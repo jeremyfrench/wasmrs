@@ -5,7 +5,7 @@ const benchmark = require('benchmark');
 const Benchmark = benchmark.runInContext({ _, process });
 window.Benchmark = Benchmark;
 
-import { pearson_correlation_coefficient as wasmpcc } from "./pkg/index.js";
+import { pearson_correlation_coefficient as wasmpcc } from "../pkg/index.js";
 import { pearsonCorrelationCoefficient as jspcc } from "./pcc.js"
 
 // Define the benchmark function

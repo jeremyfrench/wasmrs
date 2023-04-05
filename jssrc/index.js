@@ -1,2 +1,2 @@
-import { runBenchmark } from './benchmark.js';
-window.onload = runBenchmark;
+import { runBenchmark } from './bench.js';
+runBenchmark();
