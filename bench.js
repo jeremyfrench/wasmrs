@@ -24,7 +24,7 @@ for (var i=1;i<10000;i++) {
  y[i] = Math.random();
 }
 
-benchmark.options.minSamples = 500;
+benchmark.options.minSamples = 10;
 const suite = new benchmark.Suite();
 resultDiv.textContent = "here we go!";
 suite
@@ -43,7 +43,7 @@ suite
 	const fastest = 'Fastest is ' + suite.filter('fastest').map('name');
 console.log(fastest);
  resultDiv.textContent = fastest; 
-}).run({'minSamples': 100})
+}).run()
 
 }
 
