@@ -16,9 +16,15 @@ console.log("running benchmark.");
 
 const resultDiv = document.createElement('div');
 document.body.appendChild(resultDiv);
-const x = [1.0, 2.0, 3.0, 4.0, 5.0];
-const y = [2.0, 4.0, 6.0, 8.0, 10.0];
+var x = [];
+var y = [];
 
+for (var i=1;i<10000;i++) {
+ x[i] = Math.random();
+ y[i] = Math.random();
+}
+
+benchmark.options.minSamples = 500;
 const suite = new benchmark.Suite();
 resultDiv.textContent = "here we go!";
 suite
@@ -28,10 +34,16 @@ suite
   .add('Rust (WebAssembly)', function() {
    wasmpcc(x, y);
   })
+ .on("cycle", event =>  {
+         console.log(String(event.target));
+	     })
 .on('complete', event => {
         const suite = event.currentTarget;
- resultDiv.textContent = suite.toString(); 
-}).run()
+	window.suit = suite;
+	const fastest = 'Fastest is ' + suite.filter('fastest').map('name');
+console.log(fastest);
+ resultDiv.textContent = fastest; 
+}).run({'minSamples': 100})
 
 }
 

@@ -11,6 +11,11 @@ module.exports = {
         libraryTarget: 'var',
     library: 'EntryPoint'
     },
+module: {
+    noParse: [
+         /benchmark/,
+        ]
+  },
 
     plugins: [
         new HtmlWebpackPlugin(),

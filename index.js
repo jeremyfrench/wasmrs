@@ -1,2 +1,2 @@
-import { runBenchmark } from './benchmark.js';
+import { runBenchmark } from './bench.js';
 runBenchmark();
