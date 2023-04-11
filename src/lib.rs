@@ -1,4 +1,5 @@
 use wasm_bindgen::prelude::*;
+mod data_frame;
 
 #[wasm_bindgen]
 pub fn pearson_correlation_coefficient(x: &[f64], y: &[f64]) -> f64 {
