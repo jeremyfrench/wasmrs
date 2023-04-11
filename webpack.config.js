@@ -2,12 +2,13 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     entry: './jssrc/index.js',
     output: {
         path: path.resolve(__dirname, '../dist'),
-        filename: 'index.js',
+        filename: 'bm.js',
         libraryTarget: 'var',
     library: 'EntryPoint'
     },
@@ -18,7 +19,11 @@ module: {
   },
 
     plugins: [
-        new HtmlWebpackPlugin(),
+        new CopyPlugin({
+            patterns: [
+                { from: 'static' }
+            ]
+        }),
         new WasmPackPlugin({
             crateDirectory: path.resolve(__dirname, ".")
         }),
@@ -32,7 +37,7 @@ module: {
     devServer: {
 	    host: '0.0.0.0',
 	    port: 8080,
-	    disableHostCheck: true,
+	    allowedHosts: "all",
     },
     mode: 'development',
     experiments: {

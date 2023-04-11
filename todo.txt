@@ -1,0 +1,2 @@
+copy html rather thsn use gebersted
+make table js and html
