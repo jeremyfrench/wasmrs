@@ -1,3 +1,4 @@
+use super::*;
 use wasm_bindgen::prelude::*;
 
 #[derive(Debug, PartialEq)]
@@ -8,21 +9,32 @@ pub struct DataFrame {
 }
 
 impl DataFrame {
-    
-  pub fn get_num_columns(&self) -> usize {
-    // Assume all cols are the same length.  
-    self.data[0].len()
-  }
+    pub fn get_num_columns(&self) -> usize {
+        // Assume all cols are the same length.
+        self.data[0].len()
+    }
 
-  // implementation of the DataFrame struct
-  pub fn get_column(&self, index:usize) -> Option<Vec<f64>> {
-        let column_values: Vec<f64> = self
-            .data
-            .iter()
-            .map(|row| row[index])
-            .collect();
+    // implementation of the DataFrame struct
+    pub fn get_column(&self, index: usize) -> Option<Vec<f64>> {
+        let column_values: Vec<f64> = self.data.iter().map(|row| row[index]).collect();
         Some(column_values)
-  }
+    }
+}
+
+pub fn matrix_coefficient(frame: &DataFrame) -> Vec<Vec<f64>> {
+    let len = frame.get_num_columns();
+    let mut results = Vec::new();
+    for x in 0..len - 1 {
+        let mut result_col = Vec::new();
+        let col1 = frame.get_column(x).unwrap();
+        for y in x + 1..len {
+            let col2 = frame.get_column(y).unwrap();
+            let result = pearson_correlation_coefficient(&col1, &col2);
+            result_col.push(result);
+        }
+        results.push(result_col);
+    }
+    results
 }
 
 #[wasm_bindgen]
@@ -43,16 +55,21 @@ pub fn parse_csv(input: &str) -> Result<DataFrame, String> {
             .split(',')
             .enumerate()
             .map(|(j, s)| {
-                s.trim()
-                    .parse()
-                    .map_err(|e| format!("Invalid float literal at line {}, column {}: {}", i+2, j+1, e))
+                s.trim().parse().map_err(|e| {
+                    format!(
+                        "Invalid float literal at line {}, column {}: {}",
+                        i + 2,
+                        j + 1,
+                        e
+                    )
+                })
             })
             .collect();
 
         let values = values?;
 
         if values.len() != column_count {
-            return Err(format!("Mismatch in column count at line {}", i+2));
+            return Err(format!("Mismatch in column count at line {}", i + 2));
         }
 
         data.push(values);
@@ -89,63 +106,60 @@ pub fn dataframe_to_html_table(df: &DataFrame) -> String {
     table_html
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn test_dataframe_num_cols() {
-    	let df = DataFrame {
-			columns: vec!["A".to_string(), "B".to_string(), "C".to_string()],
-			data: vec![
-				vec![1.0, 2.0, 3.0],
-				vec![4.0, 5.0, 6.0],
-				vec![7.0, 8.0, 9.0],
-				vec![7.0, 8.0, 9.0],
-			],
-		};
-        assert_eq!(df.get_num_columns(),3);
+        let df = DataFrame {
+            columns: vec!["A".to_string(), "B".to_string(), "C".to_string()],
+            data: vec![
+                vec![1.0, 2.0, 3.0],
+                vec![4.0, 5.0, 6.0],
+                vec![7.0, 8.0, 9.0],
+                vec![7.0, 8.0, 9.0],
+            ],
+        };
+        assert_eq!(df.get_num_columns(), 3);
     }
 
     #[test]
     fn test_get_col() {
-    	let df = DataFrame {
-			columns: vec!["A".to_string(), "B".to_string(), "C".to_string()],
-			data: vec![
-				vec![1.0, 2.0, 3.0],
-				vec![4.0, 5.0, 6.0],
-				vec![7.0, 8.0, 9.0],
-				vec![7.0, 8.0, 9.0],
-			],
-		};
-        assert_eq!(df.get_column(0), Some(vec![1.0,4.0,7.0,7.0]));
+        let df = DataFrame {
+            columns: vec!["A".to_string(), "B".to_string(), "C".to_string()],
+            data: vec![
+                vec![1.0, 2.0, 3.0],
+                vec![4.0, 5.0, 6.0],
+                vec![7.0, 8.0, 9.0],
+                vec![7.0, 8.0, 9.0],
+            ],
+        };
+        assert_eq!(df.get_column(0), Some(vec![1.0, 4.0, 7.0, 7.0]));
+        assert_eq!(df.get_column(2), Some(vec![3.0, 6.0, 9.0, 9.0]));
     }
 
-	#[test]
-	fn test_dataframe_to_html_table() {
-		let df = DataFrame {
-			columns: vec!["A".to_string(), "B".to_string(), "C".to_string()],
-			data: vec![
-				vec![1.0, 2.0, 3.0],
-				vec![4.0, 5.0, 6.0],
-				vec![7.0, 8.0, 9.0],
-			],
-		};
+    #[test]
+    fn test_dataframe_to_html_table() {
+        let df = DataFrame {
+            columns: vec!["A".to_string(), "B".to_string(), "C".to_string()],
+            data: vec![
+                vec![1.0, 2.0, 3.0],
+                vec![4.0, 5.0, 6.0],
+                vec![7.0, 8.0, 9.0],
+            ],
+        };
 
-		let expected_html = "<table><thead><tr><th>A</th><th>B</th><th>C</th></tr></thead><tbody><tr><td>1</td><td>2</td><td>3</td></tr><tr><td>4</td><td>5</td><td>6</td></tr><tr><td>7</td><td>8</td><td>9</td></tr></tbody></table>".to_string();
-		assert_eq!(dataframe_to_html_table(&df), expected_html);
-	}
+        let expected_html = "<table><thead><tr><th>A</th><th>B</th><th>C</th></tr></thead><tbody><tr><td>1</td><td>2</td><td>3</td></tr><tr><td>4</td><td>5</td><td>6</td></tr><tr><td>7</td><td>8</td><td>9</td></tr></tbody></table>".to_string();
+        assert_eq!(dataframe_to_html_table(&df), expected_html);
+    }
 
     #[test]
     fn test_parse_csv() {
         let input = "age,weight\n25,60.5\n30,75.2\n";
         let expected = DataFrame {
             columns: vec!["age".to_string(), "weight".to_string()],
-            data: vec![
-                vec![25.0, 60.5],
-                vec![30.0, 75.2],
-            ],
+            data: vec![vec![25.0, 60.5], vec![30.0, 75.2]],
         };
         assert_eq!(parse_csv(input), Ok(expected));
     }
@@ -153,14 +167,17 @@ mod tests {
     #[test]
     fn test_parse_csv_empty_input() {
         let input = "";
-        assert_eq!(parse_csv(input), Err("CSV input has no columns".to_string()));
+        assert_eq!(
+            parse_csv(input),
+            Err("CSV input has no columns".to_string())
+        );
     }
 
     #[test]
     fn test_parse_csv_empty_line() {
         let input = "age,weight\n25,60.5\n1\n30,75.2\n";
         assert_eq!(
-            parse_csv(input), 
+            parse_csv(input),
             Err("Mismatch in column count at line 3".to_string())
         );
     }
@@ -172,5 +189,23 @@ mod tests {
             parse_csv(input),
             Err("Invalid float literal at line 3, column 1: invalid float literal".to_string())
         );
+    }
+
+    #[test]
+    fn test_matrix_coefficient() {
+        let df = DataFrame {
+            columns: vec!["A".to_string(), "B".to_string(), "C".to_string()],
+            data: vec![
+                vec![1.0, 0.0, 1.0],
+                vec![4.0, 0.0, 4.0],
+                vec![7.0, 0.0, 7.0],
+                vec![7.0, 0.0, 7.0],
+            ],
+        };
+        let result = matrix_coefficient(&df);
+        assert_eq!(result.len(), 2);
+        assert_eq!(result[0][0], 0.0);
+        assert_eq!(result[0][1], 1.0);
+        assert_eq!(result[1][0], 0.0);
     }
 }

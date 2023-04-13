@@ -1,6 +1,5 @@
 use wasm_bindgen::prelude::*;
 mod data_frame;
-use data_frame::DataFrame;
 
 #[wasm_bindgen]
 pub fn pearson_correlation_coefficient(x: &[f64], y: &[f64]) -> f64 {
@@ -24,22 +23,6 @@ pub fn pearson_correlation_coefficient(x: &[f64], y: &[f64]) -> f64 {
     } else {
         numerator / denominator
     }
-}
-
-pub fn matrix_coefficient(frame: &DataFrame) -> Vec<Vec<f64>> {
-    let len = frame.get_num_columns();
-    let mut results = Vec::new();
-    for x in 0..len - 1 {
-        let mut result_col = Vec::new();
-        let col1 = frame.get_column(x).unwrap();
-        for y in x+1..len - 1 {
-          let col2 = frame.get_column(y).unwrap();
-          let result = pearson_correlation_coefficient(&col1,&col2);
-          result_col.push(result);
-        }
-        results.push(result_col);
-    }
-    results
 }
 
 /// Calculates the cosine similarity of two n-dimensional vectors.
@@ -105,7 +88,6 @@ mod tests {
         cosine_similarity(&a, &b);
     }
 
-
     #[test]
     fn test_pearson_correlation_coefficient() {
         let x = vec![1.0, 2.0, 3.0, 4.0, 5.0];
@@ -124,4 +106,3 @@ mod tests {
         pearson_correlation_coefficient(&x, &y);
     }
 }
-
