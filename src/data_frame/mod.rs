@@ -7,6 +7,24 @@ pub struct DataFrame {
     data: Vec<Vec<f64>>,
 }
 
+impl DataFrame {
+    
+  pub fn get_num_columns(&self) -> usize {
+    // Assume all cols are the same length.  
+    self.data[0].len()
+  }
+
+  // implementation of the DataFrame struct
+  pub fn get_column(&self, index:usize) -> Option<Vec<f64>> {
+        let column_values: Vec<f64> = self
+            .data
+            .iter()
+            .map(|row| row[index])
+            .collect();
+        Some(column_values)
+  }
+}
+
 #[wasm_bindgen]
 pub fn parse_csv(input: &str) -> Result<DataFrame, String> {
     let mut lines = input.lines();
@@ -75,6 +93,34 @@ pub fn dataframe_to_html_table(df: &DataFrame) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_dataframe_num_cols() {
+    	let df = DataFrame {
+			columns: vec!["A".to_string(), "B".to_string(), "C".to_string()],
+			data: vec![
+				vec![1.0, 2.0, 3.0],
+				vec![4.0, 5.0, 6.0],
+				vec![7.0, 8.0, 9.0],
+				vec![7.0, 8.0, 9.0],
+			],
+		};
+        assert_eq!(df.get_num_columns(),3);
+    }
+
+    #[test]
+    fn test_get_col() {
+    	let df = DataFrame {
+			columns: vec!["A".to_string(), "B".to_string(), "C".to_string()],
+			data: vec![
+				vec![1.0, 2.0, 3.0],
+				vec![4.0, 5.0, 6.0],
+				vec![7.0, 8.0, 9.0],
+				vec![7.0, 8.0, 9.0],
+			],
+		};
+        assert_eq!(df.get_column(0), Some(vec![1.0,4.0,7.0,7.0]));
+    }
 
 	#[test]
 	fn test_dataframe_to_html_table() {
