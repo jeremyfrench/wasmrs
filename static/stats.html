@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Stats test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"><script defer src="stats.js"></script>
+ 
+  </head>
+  <body>
+	  <h1>do stats</h1>
+	  <textarea id="csv"></textarea>
+		  <button id="go">Go</button>
+		  <div id="results"></div>
+  <script>
+// todo: onload
+	  const button = document.getElementById("go");
+        button.click(() => {
+        const text = document.getElementById("csv").value;
+	var df = parse_csv(text);
+	const table = dataframe_to_html_table(df);	    
+	document.append(table);
+		    });
+  </script>
+ 
+  </body>
+</html>

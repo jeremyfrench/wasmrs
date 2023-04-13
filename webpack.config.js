@@ -5,12 +5,16 @@ const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-    entry: './jssrc/index.js',
+    entry: { 
+	bm: './jssrc/index.js',
+	stats: './jssrc/stats.js',
+    },
     output: {
         path: path.resolve(__dirname, '../dist'),
-        filename: 'bm.js',
+        filename: '[name].js',
         libraryTarget: 'var',
     library: 'EntryPoint'
+
     },
 module: {
     noParse: [
