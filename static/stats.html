@@ -8,19 +8,10 @@
   </head>
   <body>
 	  <h1>do stats</h1>
-	  <textarea id="csv"></textarea>
+	  <textarea id="csv"i cols="50" rows="100"></textarea>
+
 		  <button id="go">Go</button>
 		  <div id="results"></div>
-  <script>
-// todo: onload
-	  const button = document.getElementById("go");
-        button.click(() => {
-        const text = document.getElementById("csv").value;
-	var df = parse_csv(text);
-	const table = dataframe_to_html_table(df);	    
-	document.append(table);
-		    });
-  </script>
  
   </body>
 </html>
