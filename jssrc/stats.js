@@ -6,8 +6,13 @@ let gobutton = document.getElementById('go');
 gobutton.addEventListener('click', () => { 
 let data = document.getElementById('csv').value;
 let resultsDiv = document.getElementById('results');
-const csv = parse_csv(data);
-resultsDiv.innerHTML = dataframe_to_html_table(csv);	
+try {	
+  const csv = parse_csv(data);
+  resultsDiv.innerHTML = dataframe_to_html_table(csv);	
+}
+catch(err) {
+  resultsDiv.innerHTML = err;
+}
 });
 
 
