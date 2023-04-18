@@ -2,6 +2,39 @@ use wasm_bindgen::prelude::*;
 mod data_frame;
 
 #[wasm_bindgen]
+pub fn csv_to_analysis(csv: &str) -> String {
+  let data = data_frame::parse_csv(csv).unwrap();
+// TODO: handle error here.
+
+  let mut output = String::new();
+  output.push_str(&data_frame::dataframe_to_html_table(&data));
+  output.push_str("<div class='matrix-results'>");
+  for x in 0..data.get_num_columns() - 1 {
+    for y in 0..data.get_num_columns() -1 {
+       output.push_str("<div class='result'>");
+           // TODO: get coificient.
+           output.push_str(&format!("<h3>{} / {}</h3>", data.get_title(x), data.get_title(y)));
+           output.push_str(
+               &format!("<div class='coefficient'>{}</div>", 
+                        &pearson_correlation_coefficient(
+                            &data.get_column(x).unwrap(), 
+                            &data.get_column(y).unwrap()
+                            )
+                        )
+               );
+           output.push_str(&data_frame::scatter_plot_svg(&data.get_column(x).unwrap(),&data.get_column(y).unwrap(),500,500));
+       output.push_str("</div>");
+    }
+  }
+  
+
+  output.push_str("</div>");
+  
+  output
+}
+  
+
+#[wasm_bindgen]
 pub fn pearson_correlation_coefficient(x: &[f64], y: &[f64]) -> f64 {
     let n = x.len();
     assert_eq!(n, y.len());

@@ -1,5 +1,6 @@
 use super::*;
 use wasm_bindgen::prelude::*;
+use std::fmt::Write;
 
 #[derive(Debug, PartialEq)]
 #[wasm_bindgen]
@@ -12,6 +13,10 @@ impl DataFrame {
     pub fn get_num_columns(&self) -> usize {
         // Assume all cols are the same length.
         self.data[0].len()
+    }
+
+    pub fn get_title(&self, index: usize) -> &String {
+        &self.columns[index]
     }
 
     // implementation of the DataFrame struct
@@ -76,6 +81,43 @@ pub fn parse_csv(input: &str) -> Result<DataFrame, String> {
     }
 
     Ok(DataFrame { columns, data })
+}
+
+
+pub fn scatter_plot_svg(x: &[f64], y: &[f64], width: u32, height: u32) -> String {
+    let mut svg = String::new();
+
+    writeln!(svg, "<svg width=\"{}\" height=\"{}\" viewBox=\"0 0 {} {}\" xmlns=\"http://www.w3.org/2000/svg\">", width, height, width, height).unwrap();
+    writeln!(svg, "<g transform=\"translate(50, {}) scale(1, -1)\">", height - 50).unwrap();
+
+    let x_min = x.iter().copied().fold(f64::INFINITY, f64::min);
+    let x_max = x.iter().copied().fold(f64::NEG_INFINITY, f64::max);
+    let y_min = y.iter().copied().fold(f64::INFINITY, f64::min);
+    let y_max = y.iter().copied().fold(f64::NEG_INFINITY, f64::max);
+
+    let x_range = x_max - x_min;
+    let y_range = y_max - y_min;
+
+    let x_scale = (width - 100) as f64 / x_range;
+    let y_scale = (height - 100) as f64 / y_range;
+
+    // Draw the x-axis
+    writeln!(svg, "<line x1=\"50\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"black\" stroke-width=\"2\" />", height - 50, width - 50, height - 50).unwrap();
+
+    // Draw the y-axis
+    writeln!(svg, "<line x1=\"50\" y1=\"{}\" x2=\"50\" y2=\"{}\" stroke=\"black\" stroke-width=\"2\" />", height - 50, 50).unwrap();
+
+    for (x_val, y_val) in x.iter().zip(y.iter()) {
+        let x_pos = ((x_val - x_min) * x_scale) as u32 + 50;
+        let y_pos = ((y_val - y_min) * y_scale) as u32 + 50;
+
+        writeln!(svg, "<circle cx=\"{}\" cy=\"{}\" r=\"3\" fill=\"blue\" stroke=\"black\" opacity=\"0.3\" stroke-width=\"1\" />", x_pos, y_pos).unwrap();
+    }
+
+    writeln!(svg, "</g>").unwrap();
+    writeln!(svg, "</svg>").unwrap();
+
+    svg
 }
 
 #[wasm_bindgen]
@@ -208,4 +250,7 @@ mod tests {
         assert_eq!(result[0][1], 1.0);
         assert_eq!(result[1][0], 0.0);
     }
+
+   // TODO mod for CSV nd svg HTML etc
+   // better tests
 }
