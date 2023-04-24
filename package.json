@@ -6,15 +6,24 @@
   "devDependencies": {
     "@wasm-tool/wasm-pack-plugin": "1.5.0",
     "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.7.3",
     "html-webpack-plugin": "^5.3.2",
+    "mini-css-extract-plugin": "^2.7.5",
+    "node-sass": "^8.0.0",
+    "postcss": "^8.4.22",
+    "postcss-loader": "^7.2.4",
+    "sass-loader": "^13.2.2",
+    "style-loader": "^3.3.2",
     "text-encoding": "^0.7.0",
-    "webpack": "^5.49.0",
+    "webpack": "^5.79.0",
     "webpack-cli": "^4.7.2",
     "webpack-dev-server": "^4.13.2"
   },
   "dependencies": {
     "benchmark": "^2.1.4",
+    "bootstrap": "^5.3.0-alpha3",
     "events": "^3.3.0",
-    "process": "^0.11.10"
+    "process": "^0.11.10",
+    "sass": "^1.62.0"
   }
 }

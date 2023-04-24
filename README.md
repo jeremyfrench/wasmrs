@@ -6,6 +6,7 @@ This code was developed with the assistance of ChatGPT, a large language model t
 
 ChatGPT also "chose" that the code be released under an MIT licence.
 
+This repo is basically a sandbox of me trying things out. It's good if you too are looking to tinker. If you actually want a rust wasm powered data tool, look at this https://www.quadratichq.com/
 # Setup
 
 ```
@@ -31,10 +32,17 @@ This has been great for the algorithms and direction, but also it has been compl
 This was a POC and a benchmark to make sure that this was possible and faster than vanilla JS
 
 ## Phase 2
-This will enable CSV data to be entered via a text area
+This enabled CSV data to be entered via a text area
 
 ## Phase 3
-This will run statics on the data and display graphs.
+This runs statics on the data and display graphs.
+
+## Phase 4
+Make it look nice and display progress in some way when it is running.
+
+## Phase 5
+Allow different types in the data
+
 
 After that who knows...
 
@@ -45,3 +53,11 @@ You must must must optimise the rust code otherwise it will be slower than JS.
 The optimised code is about 8X faster than JS. That's with the function call overhead too.
 
 Webpack is harder than Rust. Getting the rust to compile was easy, getting the benchmark to run took much longer.
+
+Getting Webpack to make a CSV file rather than including the CSS in the JS was harder than expected.
+
+
+
+# Reading list/Links
+
+https://vincentarelbundock.github.io/Rdatasets/datasets.html
