@@ -9,10 +9,10 @@ module.exports = {
     entry: { 
 	bm: './jssrc/index.js',
 	stats: './jssrc/stats.js',
-	styles: './scss/main.scss',    
+	styles: './jssrc/styles.js',    
     },
     output: {
-        path: path.resolve(__dirname, '../dist'),
+        path: path.resolve(__dirname, './dist'),
         filename: '[name].js',
         libraryTarget: 'var',
     library: 'EntryPoint'
@@ -24,19 +24,11 @@ module: {
         ],
 rules: [
        {
-              test: /\.css$/,
-              use: [MiniCssExtractPlugin.loader, 'style-loader', 'css-loader']
-      },
+test: /\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
 {
-  test: /\.(scss)$/,
-  use: [
-  MiniCssExtractPlugin.loader,{
-    // inject CSS to page
-    loader: 'style-loader'
-  }, {
-    // translates CSS into CommonJS modules
-    loader: 'css-loader'
-  }, {
     // Run postcss actions
     loader: 'postcss-loader',
     options: {
@@ -61,7 +53,8 @@ rules: [
 
     plugins: [
 	new MiniCssExtractPlugin({
-	  filename: "css/[name].css" 
+filename: '[name].css',
+      chunkFilename: '[id].css'
 	}),
         new CopyPlugin({
             patterns: [
