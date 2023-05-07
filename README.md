@@ -1,6 +1,8 @@
-WebAsm In Rust
+#WebAsm In Rust
 
 This is currently just a sandbox for trying to get WebAsm running with Rust.
+
+I'm using it as an oppertunity to learn a bit more Rust while experementing with WASM. It's not intended to end up as a poduct or a library but it could be useful for someone else looking to do the same.
 
 This code was developed with the assistance of ChatGPT, a large language model trained by OpenAI, based on the GPT-3.5 architecture. Some of the code in this project is based on guidance and suggestions provided by ChatGPT during development.
 
